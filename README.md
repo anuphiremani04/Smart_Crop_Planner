@@ -164,5 +164,11 @@ This ensures a clean and realistic authentication workflow.
 
 ---
 
+📝 **Conclusion**
+
+The **Smart Crop Planner** project provides a simple and well-structured foundation for implementing user registration and login using a clearly defined database schema and backend authentication flow. By including only table creation SQL and core logic—without any pre-configured database or login credentials—the project encourages users to set up and understand the system from scratch, making it ideal for learning, academic projects, and future enhancements such as secure authentication and role-based access control. 
+
+⭐ **If you find this project useful, don’t forget to give it a Star on GitHub!**
+
 
 
