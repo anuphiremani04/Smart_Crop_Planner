@@ -69,95 +69,100 @@ This project is suitable for:
 
 ---
 
-
-⚙️ Setup & Usage Guide
+## ⚙️ Setup & Usage Guide
 
 Follow the steps below to run the project locally:
 
-1️⃣ Prerequisites
+### 1️⃣ Prerequisites
 
 Make sure the following are installed on your system:
 
-PHP (8.x recommended)
+* PHP (8.x recommended)
+* MySQL / MariaDB
+* Apache Server (XAMPP / WAMP / LAMP)
+* Web browser (Chrome, Firefox, etc.)
 
-MySQL / MariaDB
+---
 
-Apache Server (XAMPP / WAMP / LAMP)
+### 2️⃣ Project Setup
 
-Web browser (Chrome, Firefox, etc.)
+1. Download or clone this repository:
 
-2️⃣ Project Setup
+   ```bash
+   git clone <repository-url>
+   ```
 
-Download or clone this repository:
+2. Move the project folder to your web server directory:
 
-git clone <repository-url>
+   * XAMPP → `htdocs/`
+   * WAMP → `www/`
 
+3. Start **Apache** and **MySQL** from your server control panel.
 
-Move the project folder to your web server directory:
+---
 
-XAMPP → htdocs/
+### 3️⃣ Database Setup
 
-WAMP → www/
+1. Open **phpMyAdmin**
+2. Create a new database (for example):
 
-Start Apache and MySQL from your server control panel.
-
-3️⃣ Database Setup
-
-Open phpMyAdmin
-
-Create a new database (for example):
-
-crop
-
-
-Select the created database
-
-Open the SQL tab and execute the provided CREATE TABLE SQL scripts from the repository
+   ```
+   crop
+   ```
+3. Select the created database
+4. Open the SQL tab and execute the provided **CREATE TABLE SQL scripts** from the repository
 
 ⚠️ No tables are pre-filled with data. Only table structure is created.
 
-4️⃣ Configure Database Connection
+---
 
-Open the database configuration file (e.g., db.php)
+### 4️⃣ Configure Database Connection
 
-Update the database name, username, and password:
+1. Open the database configuration file (e.g., `db.php`)
+2. Update the database name, username, and password:
 
+```php
 $pdo = new PDO(
     "mysql:host=localhost;dbname=crop;charset=utf8mb4",
     "root",
     ""
 );
-
+```
 
 (Adjust credentials based on your local setup.)
 
-5️⃣ Registration & Login
+---
 
-The system does not include default users
+### 5️⃣ Registration & Login
 
-Users must register first using the registration forms
-
-After successful registration, users can log in using their own credentials
+* The system **does not include default users**
+* Users must **register first** using the registration forms
+* After successful registration, users can log in using their own credentials
 
 This ensures a clean and realistic authentication workflow.
 
-6️⃣ Running the Application
+---
 
-Open your browser
+### 6️⃣ Running the Application
 
-Navigate to:
+1. Open your browser
+2. Navigate to:
 
-http://localhost/<project-folder-name>/
+   ```
+   http://localhost/<project-folder-name>/
+   ```
+3. Register as Admin or Farmer
+4. Log in and explore the features
+
+---
+
+### 🧪 Notes
+
+* This project is intended for **local development and learning**
+* Password hashing and authentication logic can be extended for production use
+* The schema is flexible and can be modified as needed
+
+---
 
 
-Register as Admin or Farmer
 
-Log in and explore the features
-
-🧪 Notes
-
-This project is intended for local development and learning
-
-Password hashing and authentication logic can be extended for production use
-
-The schema is flexible and can be modified as needed
