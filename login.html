@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Login - SmartCrop Planner</title>
+<link href="assets/style.css" rel="stylesheet"/>
+<style>
+body{position:relative}
+body::before{content:'';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background-image:url('logo.png');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:0.05;z-index:0;pointer-events:none}
+body>*{position:relative;z-index:1}
+.brand-logo{display:flex;align-items:center;gap:12px}
+.brand-logo img{height:40px;width:auto;object-fit:contain}
+#login-tabs .tabs {
+  display: flex !important;
+  border-bottom: 2px solid #eef2f7;
+  margin-bottom: 20px;
+  width: 100%;
+}
+#login-tabs .tab {
+  padding: 14px 24px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #6b7280;
+  flex: 1;
+  text-align: center;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+#login-tabs .tab:hover {
+  color: #3b82f6;
+  background-color: #f8fafc;
+}
+#login-tabs .tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background-color: transparent;
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="brand-logo">
+<img src="logo.png" alt="Smart Crop Planner Logo" onerror="this.style.display='none'"/>
+<span class="brand">Smart Crop Planner</span>
+</div>
+<div class="navlinks"><a href="index.html">Home</a>
+<div class="register-dropdown" style="display:inline-block;position:relative;">
+<a class="nav-register-link" href="register.html" style="margin-left:18px;color:#374151;text-decoration:none;font-weight:600;">Register</a>
+<div class="register-menu" style="position:absolute;right:0;top:28px;display:none;background:white;border:1px solid #e6eef6;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.08);overflow:hidden;z-index:1000;">
+<a href="register.html#user" style="display:block;padding:10px 14px;color:#0f172a;text-decoration:none;">Farmer Register</a>
+<a href="register.html#admin" style="display:block;padding:10px 14px;color:#0f172a;text-decoration:none;">Admin Register</a>
+</div>
+</div>
+</div>
+</div>
+<div class="hero">
+<div class="card-auth">
+<div id="login-tabs">
+<div class="tabs">
+<div class="tab active">Farmer</div>
+<div class="tab">Admin</div>
+</div>
+<div class="tab-pane" style="display:block">
+<form id="user-login-form">
+<label>Email / Username</label>
+<input class="form-control" id="user-login-username" placeholder="Email or Username" required="" type="text"/>
+<label>Password</label>
+<input class="form-control" id="user-login-password" placeholder="Password" required="" type="password"/>
+<button class="btn-primary" type="submit">Login</button>
+</form>
+<p class="status-text" id="user-login-status" style="margin-top:10px;text-align:center;color:#666;font-size:14px"></p>
+<a class="small-link" href="register.html#user">Don't have account? Register</a>
+</div>
+<div class="tab-pane" style="display:none">
+<form id="admin-login-form">
+<label>Admin Username</label>
+<input class="form-control" id="admin-login-username" placeholder="Admin Username" required=""/>
+<label>Admin Password</label>
+<input class="form-control" id="admin-login-password" placeholder="Admin Password" required="" type="password"/>
+<button class="btn-primary" type="submit">Login</button>
+</form>
+<p class="status-text" id="admin-login-status" style="margin-top:10px;text-align:center;color:#666;font-size:14px"></p>
+<a class="small-link" href="register.html#admin">Don't have account? Register</a>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">© 2025 Smart Crop Planner</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

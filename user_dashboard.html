@@ -1,0 +1,579 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Farmer Dashboard - Crop Recommendations</title>
+<link href="assets/style.css" rel="stylesheet">
+<style>
+body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;font-family:'Poppins',sans-serif;position:relative}
+body::before{content:'';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background-image:url('logo.png');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:0.08;z-index:0;pointer-events:none}
+body>*{position:relative;z-index:1}
+.container{max-width:1400px;margin:0 auto}
+.header{background:rgba(255,255,255,0.95);padding:20px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
+.header h1{margin:0;color:#667eea}
+.btn{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;transition:transform 0.2s}
+.btn:hover{transform:scale(1.05)}
+.btn-danger{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%)}
+.btn-success{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)}
+.card{background:rgba(255,255,255,0.95);padding:24px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,0.1);margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;color:#333}
+.form-group input,.form-group select{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px}
+.form-row{display:flex;gap:10px;margin-bottom:16px}
+.form-row .form-group{flex:1;margin-bottom:0}
+.form-actions{display:flex;gap:10px;margin-top:20px}
+.result-list{margin-top:20px}
+.result-card{background:rgba(255,255,255,0.8);padding:20px;margin-bottom:15px;border-radius:10px;border-left:4px solid #667eea;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.result-card h4{margin:0 0 10px 0;color:#667eea;font-size:1.2rem}
+.result-card p{margin:8px 0;color:#475569;line-height:1.6}
+.result-card .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px;font-size:14px}
+.result-card .info div{color:#64748b}
+.result-card .score{color:#667eea;font-weight:700;font-size:1.1rem}
+.image-slider{position:relative;width:100%;height:400px;overflow:hidden;border-radius:12px}
+.slider-container{display:flex;width:100%;height:100%;transition:transform 0.8s ease-in-out}
+.slide-image{min-width:100%;height:100%;object-fit:cover}
+.slider-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);padding:30px;color:white;pointer-events:none}
+.slider-dots{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10}
+.slider-dots .dot{width:12px;height:12px;border-radius:50%;background:white;cursor:pointer;opacity:0.5;transition:opacity 0.3s}
+.slider-dots .dot.active{opacity:1}
+.status{padding:10px;border-radius:6px;margin-bottom:15px;display:none}
+.status.success{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+.status.error{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
+.modal-content{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);padding:30px;border-radius:12px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>
+<img src="logo.png" alt="Smart Crop Planner Logo" style="height:40px;width:auto;object-fit:contain;margin-right:12px" onerror="this.style.display='none'"/>
+Farmer Dashboard
+</h1>
+<div style="display:flex;align-items:center;gap:12px">
+<img src="profile.png" alt="Profile" id="user-profile-img" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #667eea" onerror="this.style.display='none'"/>
+<span id="user-name" style="font-weight:600"></span>
+<button class="btn btn-success" id="btn-edit-profile">Edit Profile</button>
+<button class="btn btn-danger" id="btn-logout">Logout</button>
+</div>
+</div>
+
+<div id="status" class="status"></div>
+
+<div class="card" style="padding:0;overflow:hidden;position:relative">
+<div class="image-slider" style="position:relative;width:100%;height:400px;overflow:hidden;border-radius:12px">
+<div class="slider-container" style="display:flex;width:100%;height:100%;transition:transform 0.8s ease-in-out">
+<img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&auto=format" alt="Agriculture" class="slide-image" style="min-width:100%;height:100%;object-fit:cover" onerror="this.src='https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&auto=format'"/>
+<img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1200&auto=format" alt="Farming" class="slide-image" style="min-width:100%;height:100%;object-fit:cover" onerror="this.src='https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&auto=format'"/>
+<img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&auto=format" alt="Crops" class="slide-image" style="min-width:100%;height:100%;object-fit:cover" onerror="this.src='https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&auto=format'"/>
+<img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&auto=format" alt="Smart Farming" class="slide-image" style="min-width:100%;height:100%;object-fit:cover" onerror="this.src='https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&auto=format'"/>
+</div>
+<div class="slider-overlay" style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);padding:30px;color:white">
+<h2 style="margin:0;font-size:2rem;text-shadow:2px 2px 4px rgba(0,0,0,0.5)">Smart Crop Planner</h2>
+<p style="margin:10px 0 0 0;font-size:1.1rem;opacity:0.9">Your trusted agricultural advisory system</p>
+</div>
+<div class="slider-dots" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10">
+<span class="dot active" data-slide="0" style="width:12px;height:12px;border-radius:50%;background:white;cursor:pointer;opacity:1;transition:opacity 0.3s"></span>
+<span class="dot" data-slide="1" style="width:12px;height:12px;border-radius:50%;background:white;cursor:pointer;opacity:0.5;transition:opacity 0.3s"></span>
+<span class="dot" data-slide="2" style="width:12px;height:12px;border-radius:50%;background:white;cursor:pointer;opacity:0.5;transition:opacity 0.3s"></span>
+<span class="dot" data-slide="3" style="width:12px;height:12px;border-radius:50%;background:white;cursor:pointer;opacity:0.5;transition:opacity 0.3s"></span>
+</div>
+</div>
+</div>
+
+<div class="card" id="recommendations-section" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h2 style="margin:0;color:#667eea">🌱 Get Crop Recommendations</h2>
+<button class="btn" id="btn-close-recommendations" style="padding:8px 16px;font-size:14px">✕ Close</button>
+</div>
+<div class="form-row" style="justify-content:center">
+<div class="form-group" style="width:100%;max-width:400px">
+<label style="text-align:center;display:block;margin-bottom:10px;font-size:16px;font-weight:600;color:#667eea">Select Crop</label>
+<select id="input-crop" required="" style="width:100%;padding:12px;font-size:15px;text-align:center">
+<option value="">Select Crop</option>
+</select>
+</div>
+</div>
+<div class="form-actions" style="justify-content:center;margin-top:25px">
+<button class="btn btn-success" id="btn-get" style="padding:14px 50px;font-size:16px;font-weight:600">Get Recommendations</button>
+</div>
+<div id="result-list" class="result-list"></div>
+</div>
+
+<div class="card" style="text-align:center;padding:30px">
+<button class="btn btn-success" id="btn-show-recommendations" style="padding:14px 40px;font-size:16px">🌾 Get Crop Recommendations</button>
+</div>
+
+<!-- Profile Edit Modal -->
+<div id="profile-modal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center">
+<div class="modal-content" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);padding:30px;border-radius:12px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+<h2 style="margin-top:0;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.3)">Edit Profile</h2>
+<form id="profile-form">
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Full Name</label>
+<input type="text" id="profile-name" required style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Email</label>
+<input type="email" id="profile-email" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Username</label>
+<input type="text" id="profile-username" required style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Contact Number</label>
+<input type="text" id="profile-contact" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Location</label>
+<input type="text" id="profile-location" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Soil Type</label>
+<select id="profile-soil" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)">
+<option value="Black">Black</option>
+<option value="Red">Red</option>
+<option value="Sandy">Sandy</option>
+<option value="Loamy">Loamy</option>
+<option value="Laterite">Laterite</option>
+<option value="Alluvial">Alluvial</option>
+<option value="Clay">Clay</option>
+</select>
+</div>
+<div style="border-top:2px solid rgba(255,255,255,0.3);margin:20px 0;padding-top:20px">
+<h3 style="margin-top:0;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3);font-size:1.1rem">Change Password (Optional)</h3>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Current Password</label>
+<input type="password" id="profile-current-password" placeholder="Enter current password to change" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">New Password</label>
+<input type="password" id="profile-new-password" placeholder="Enter new password" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+<div class="form-group">
+<label style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)">Confirm New Password</label>
+<input type="password" id="profile-confirm-password" placeholder="Confirm new password" style="background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3)"/>
+</div>
+</div>
+<div class="form-actions">
+<button type="button" class="btn" onclick="closeProfileModal()">Cancel</button>
+<button type="submit" class="btn btn-success">Save Changes</button>
+    </div>
+</form>
+    </div>
+  </div>
+
+<script>
+let currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+if(!currentUser || !currentUser.user_id){
+  window.location.href = 'login.html';
+}else{
+  document.getElementById('user-name').textContent = currentUser.name || 'Farmer';
+  // Load profile data into modal
+  document.getElementById('profile-name').value = currentUser.name || '';
+  document.getElementById('profile-email').value = currentUser.email || '';
+  document.getElementById('profile-username').value = currentUser.username || '';
+  document.getElementById('profile-contact').value = currentUser.contact_no || '';
+  document.getElementById('profile-location').value = currentUser.location || '';
+  document.getElementById('profile-soil').value = currentUser.soil_type || 'Black';
+}
+
+document.getElementById('btn-logout').addEventListener('click', function(){
+  localStorage.removeItem('user');
+  window.location.href = 'index.html';
+});
+
+document.getElementById('btn-edit-profile').addEventListener('click', function(){
+  // Clear password fields when opening modal
+  document.getElementById('profile-current-password').value = '';
+  document.getElementById('profile-new-password').value = '';
+  document.getElementById('profile-confirm-password').value = '';
+  document.getElementById('profile-modal').style.display = 'flex';
+});
+
+function closeProfileModal(){
+  document.getElementById('profile-modal').style.display = 'none';
+}
+
+document.getElementById('profile-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  
+  const currentPassword = document.getElementById('profile-current-password').value.trim();
+  const newPassword = document.getElementById('profile-new-password').value.trim();
+  const confirmPassword = document.getElementById('profile-confirm-password').value.trim();
+  
+  // Validate password change if any password field is filled
+  if(currentPassword || newPassword || confirmPassword){
+    if(!currentPassword){
+      showStatus('Please enter your current password to change it', 'error');
+      return;
+    }
+    if(!newPassword){
+      showStatus('Please enter a new password', 'error');
+      return;
+    }
+    if(newPassword.length < 6){
+      showStatus('New password must be at least 6 characters long', 'error');
+      return;
+    }
+    if(newPassword !== confirmPassword){
+      showStatus('New passwords do not match', 'error');
+      return;
+    }
+  }
+  
+  const profileData = {
+    user_id: currentUser.user_id,
+    name: document.getElementById('profile-name').value.trim(),
+    email: document.getElementById('profile-email').value.trim(),
+    username: document.getElementById('profile-username').value.trim(),
+    contact: document.getElementById('profile-contact').value.trim(),
+    location: document.getElementById('profile-location').value.trim(),
+    soil: document.getElementById('profile-soil').value
+  };
+  
+  // Add password fields only if provided
+  if(currentPassword && newPassword){
+    profileData.current_password = currentPassword;
+    profileData.new_password = newPassword;
+  }
+  
+  try{
+    const res = await fetch('./api/update_profile.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(profileData)
+    });
+    
+    const data = await res.json();
+    
+    if(data.success){
+      // Update current user in localStorage
+      currentUser = {...currentUser, ...data.user};
+      localStorage.setItem('user', JSON.stringify(currentUser));
+      document.getElementById('user-name').textContent = currentUser.name || 'Farmer';
+      // Clear password fields
+      document.getElementById('profile-current-password').value = '';
+      document.getElementById('profile-new-password').value = '';
+      document.getElementById('profile-confirm-password').value = '';
+      showStatus('Profile updated successfully!', 'success');
+      closeProfileModal();
+    }else{
+      showStatus(data.error || 'Failed to update profile', 'error');
+    }
+  }catch(err){
+    console.error('Error updating profile', err);
+    showStatus('Error connecting to server. Please try again.', 'error');
+  }
+});
+
+function showStatus(message, type = 'success'){
+  const status = document.getElementById('status');
+  status.textContent = message;
+  status.className = 'status ' + type;
+  status.style.display = 'block';
+  setTimeout(() => status.style.display = 'none', 3000);
+}
+
+// Function to map all seasons to common seasons: Summer, Winter, Rainy, Monsoon
+function formatSeason(season){
+  if(!season) return 'N/A';
+  
+  // Map all seasons to 4 common seasons
+  const seasonMap = {
+    // Winter months
+    'Winter': 'Winter',
+    'Rabi': 'Winter',
+    
+    // Summer months
+    'Summer': 'Summer',
+    'Zaid': 'Summer',
+    'Pre-Monsoon': 'Summer',
+    
+    // Rainy/Monsoon months
+    'Monsoon': 'Rainy',
+    'Rainy': 'Rainy',
+    'Kharif': 'Rainy',
+    'Post-Monsoon': 'Rainy'
+  };
+  
+  // Return mapped season or original if not found
+  return seasonMap[season] || season;
+}
+
+// Image Slider Auto-Slide Functionality
+let currentSlide = 0;
+const totalSlides = 4;
+const sliderContainer = document.querySelector('.slider-container');
+const dots = document.querySelectorAll('.dot');
+
+function updateSlider() {
+  if (sliderContainer) {
+    sliderContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    // Update dots
+    dots.forEach((dot, index) => {
+      if (index === currentSlide) {
+        dot.classList.add('active');
+        dot.style.opacity = '1';
+      } else {
+        dot.classList.remove('active');
+        dot.style.opacity = '0.5';
+      }
+    });
+  }
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % totalSlides;
+  updateSlider();
+}
+
+// Auto-slide every 4 seconds
+let slideInterval = setInterval(nextSlide, 4000);
+
+// Dot click handlers
+dots.forEach((dot, index) => {
+  dot.addEventListener('click', () => {
+    currentSlide = index;
+    updateSlider();
+    // Reset auto-slide timer
+    clearInterval(slideInterval);
+    slideInterval = setInterval(nextSlide, 4000);
+  });
+});
+
+// Pause on hover
+const imageSlider = document.querySelector('.image-slider');
+if (imageSlider) {
+  imageSlider.addEventListener('mouseenter', () => {
+    clearInterval(slideInterval);
+  });
+  
+  imageSlider.addEventListener('mouseleave', () => {
+    slideInterval = setInterval(nextSlide, 4000);
+  });
+}
+
+// Load crops for dropdown
+async function loadCropsDropdown(){
+  const cropSelect = document.getElementById('input-crop');
+  try{
+    const res = await fetch('./api/list_crops.php');
+    const data = await res.json();
+    
+    if(data.success && data.data){
+      cropSelect.innerHTML = '<option value="">Select Crop</option>';
+      data.data.forEach(crop => {
+        const option = document.createElement('option');
+        option.value = crop.crop_name;
+        option.textContent = crop.crop_name;
+        cropSelect.appendChild(option);
+      });
+    }
+  }catch(err){
+    console.error('Error loading crops', err);
+  }
+}
+
+// Load crops on page load
+loadCropsDropdown();
+
+// Show recommendations section
+document.getElementById('btn-show-recommendations').addEventListener('click', function(){
+  document.getElementById('recommendations-section').style.display = 'block';
+  document.getElementById('btn-show-recommendations').parentElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+});
+
+// Close recommendations section
+document.getElementById('btn-close-recommendations').addEventListener('click', function(){
+  document.getElementById('recommendations-section').style.display = 'none';
+  document.getElementById('result-list').innerHTML = '';
+});
+
+// Get recommendations handler
+document.getElementById('btn-get').addEventListener('click', async function(){
+  const cropName = document.getElementById('input-crop').value;
+  
+  if(!cropName){
+    showStatus('Please select a crop', 'error');
+    return;
+  }
+  
+  const resultList = document.getElementById('result-list');
+  resultList.innerHTML = '<p style="text-align:center;padding:20px;color:#667eea">Loading recommendations...</p>';
+  
+  // Make sure results section is visible
+  document.getElementById('recommendations-section').style.display = 'block';
+  
+  try{
+    const res = await fetch('./api/get_recommendations.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({crop_name: cropName})
+    });
+    
+    if(!res.ok){
+      throw new Error('Network response was not ok: ' + res.status);
+    }
+    
+    const data = await res.json();
+    console.log('API Response:', data);
+    
+    if(!data.success){
+      showStatus(data.error || 'No recommendations found', 'error');
+      resultList.innerHTML = '<div class="result-card" style="background:#fee;color:#c33;padding:20px;text-align:center"><p>' + (data.error || 'No recommendations found') + '</p></div>';
+      return;
+    }
+    
+    if(!data.recommendations || data.recommendations.length === 0){
+      showStatus('No suitable locations found for the selected crop.', 'error');
+      resultList.innerHTML = '<div class="result-card" style="background:#fee;color:#c33;padding:20px;text-align:center"><p>No suitable locations found for the selected crop.</p></div>';
+      return;
+    }
+    
+    resultList.innerHTML = '';
+    
+    // Scroll to results section
+    setTimeout(() => {
+      resultList.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }, 100);
+    
+    // Display crop and season information prominently
+    const searchInfo = data.search_info || {};
+    const apiCropName = searchInfo.crop_name || 'Selected Crop';
+    const cropSeason = searchInfo.crop_season || '';
+    const seasonDisplay = formatSeason(cropSeason);
+    
+    // Add crop information header
+    const cropInfo = document.createElement('div');
+    cropInfo.className = 'result-card';
+    cropInfo.style.cssText = 'background:linear-gradient(135deg,#667eea,#764ba2);color:white;margin-bottom:20px;text-align:center;padding:20px';
+    cropInfo.innerHTML = `
+      <h3 style="margin:0 0 10px 0;font-size:1.3rem">🌾 Crop Information</h3>
+      <p style="margin:5px 0;font-size:1.2rem;font-weight:600">
+        <strong>Crop:</strong> ${apiCropName}
+      </p>
+      <p style="margin:5px 0;font-size:1.1rem;font-weight:600">
+        <strong>Best Season:</strong> ${seasonDisplay}
+      </p>
+      <p style="margin:10px 0 0 0;font-size:0.9rem;opacity:0.85">
+        📍 Suitable locations for growing <strong>${apiCropName}</strong>
+      </p>
+    `;
+    resultList.appendChild(cropInfo);
+    
+    // Store search data for PDF generation
+    window.lastSearchData = {
+      crop_name: cropName,
+      recommendations: data.recommendations,
+      search_info: searchInfo
+    };
+    
+    console.log('Displaying', data.recommendations.length, 'recommendations');
+    
+    // Get month names for display
+    const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    data.recommendations.forEach((location, index) => {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      const seasonDisplay = formatSeason(location.season);
+      
+      // Ensure all required fields exist
+      const locName = location.location || 'Unknown Location';
+      const temp = location.temperature !== undefined ? parseFloat(location.temperature).toFixed(2) : 'N/A';
+      const rain = location.rainfall !== undefined ? parseFloat(location.rainfall).toFixed(2) : 'N/A';
+      const humid = location.humidity !== undefined ? parseFloat(location.humidity).toFixed(1) : 'N/A';
+      const month = location.month || '';
+      
+      card.innerHTML = `
+        <h4>${index + 1}. ${locName}</h4>
+        <div class="info">
+          <div><strong>Location:</strong> ${locName}</div>
+          ${month ? `<div><strong>Best Month:</strong> ${month}</div>` : ''}
+          <div><strong>Season:</strong> ${seasonDisplay}</div>
+          <div><strong>Temperature:</strong> ${temp}°C</div>
+          <div><strong>Rainfall:</strong> ${rain}mm</div>
+          <div><strong>Humidity:</strong> ${humid}%</div>
+          ${location.suitable_soil ? `<div><strong>Suitable Soil:</strong> ${location.suitable_soil}</div>` : ''}
+        </div>
+      `;
+      resultList.appendChild(card);
+    });
+    
+    console.log('Results appended to DOM. Total cards:', resultList.children.length);
+    
+    // Add download PDF button
+    const downloadBtn = document.createElement('div');
+    downloadBtn.style.cssText = 'margin-top:20px;text-align:center';
+    downloadBtn.innerHTML = '<button class="btn btn-success" id="btn-download-pdf" style="padding:12px 30px;font-size:16px">📥 Download PDF Report</button>';
+    resultList.appendChild(downloadBtn);
+    
+    showStatus(`Found ${data.recommendations.length} suitable locations in ${seasonDisplay} season!`);
+    
+    // Log the search
+    try{
+      await fetch('./api/log_search.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          user_id: currentUser.user_id || null,
+          query_text: `recommend ${cropName}`,
+          location: null,
+          result_count: data.recommendations.length
+        })
+      });
+  }catch(e){
+      console.error('Failed to log search', e);
+    }
+    
+  }catch(err){
+    console.error('Error fetching recommendations', err);
+    showStatus('Error connecting to server. Please try again.', 'error');
+    resultList.innerHTML = '<div class="result-card" style="background:#fee;color:#c33;padding:20px;text-align:center"><p>Error: ' + err.message + '</p><p style="font-size:0.9rem;margin-top:10px">Please check the browser console for more details.</p></div>';
+  }
+});
+
+// PDF Download handler
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'btn-download-pdf'){
+    if(!window.lastSearchData){
+      showStatus('Please search for recommendations first', 'error');
+      return;
+    }
+    
+    const searchData = window.lastSearchData;
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // Create form and submit to PDF endpoint
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = './api/generate_farmer_search_pdf.php';
+    form.target = '_blank';
+    
+    const data = {
+      crop_name: searchData.crop_name,
+      user_id: currentUser.user_id || 0
+    };
+    
+    Object.keys(data).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = data[key];
+      form.appendChild(input);
+    });
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    
+    showStatus('Generating PDF...', 'success');
+  }
+});
+</script>
+</body>
+</html>

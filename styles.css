@@ -1,0 +1,70 @@
+
+/* Modern UI Overhaul */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: #fff;
+}
+
+.site-header {
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(6px);
+    padding: 15px 0;
+}
+
+.top-links a {
+    color: #fff;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.top-links a:hover {
+    color: #ffe680;
+}
+
+.hero {
+    height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.center-card {
+    background: rgba(255,255,255,0.15);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    width: 350px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 5px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    background: #ffe680;
+    color: #000;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:scale(0.9); }
+    to { opacity:1; transform:scale(1); }
+}

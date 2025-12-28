@@ -1,0 +1,1 @@
+<?php header('Content-Type: application/json; charset=utf-8'); require_once __DIR__.'/db.php'; $stmt=$pdo->query('SELECT DISTINCT crop_name FROM crops ORDER BY crop_name'); $crops=$stmt->fetchAll(PDO::FETCH_COLUMN); $data=array_map(function($name){return['crop_name'=>$name];},$crops); echo json_encode(['success'=>true,'data'=>$data]); ?>

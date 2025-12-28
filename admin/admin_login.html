@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="../assets/style.css" rel="stylesheet">
+<title>Admin Login</title>
+<style>
+body{position:relative}
+body::before{content:'';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background-image:url('../logo.png');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:0.05;z-index:0;pointer-events:none}
+body>*{position:relative;z-index:1}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="brand-logo" style="display:flex;align-items:center;gap:12px">
+<img src="../logo.png" alt="Smart Crop Planner Logo" style="height:40px;width:auto;object-fit:contain" onerror="this.style.display='none'"/>
+<span class="brand">Smart Crop Planner</span>
+</div>
+<div class="navlinks"><a href="../index.html">Home</a></div>
+</div>
+<div class="hero">
+<div class="card-auth">
+<h2 style="margin-top:0;text-align:center;color:#667eea">Admin Login</h2>
+<form id="admin-login-form">
+<label>Admin Username</label>
+<input class="form-control" id="admin-login-username" placeholder="Admin Username" required="">
+<label>Password</label>
+<input class="form-control" id="admin-login-password" placeholder="Admin Password" required="" type="password">
+<button class="btn-primary" type="submit">Login</button>
+</form>
+<p class="status-text" id="admin-login-status" style="margin-top:10px;text-align:center;color:#666"></p>
+<p style="text-align:center;margin-top:15px"><a href="../register.html#admin" class="small-link">Don't have account? Register</a></p>
+</div>
+</div>
+<script>
+const form=document.getElementById('admin-login-form');
+const statusEl=document.getElementById('admin-login-status');
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  statusEl.textContent='Authenticating...';
+  const username=document.getElementById('admin-login-username').value.trim();
+  const password=document.getElementById('admin-login-password').value;
+  if(!username||!password){
+    statusEl.textContent='Enter both username and password.';
+    return;
+  }
+  try{
+    const res=await fetch('../api/admin_login.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+    const data=await res.json();
+    if(!res.ok||!data.success){
+      statusEl.textContent=data.error||'Invalid credentials.';
+      return;
+    }
+    localStorage.setItem('admin_token',data.token||'');
+    localStorage.setItem('admin_user',JSON.stringify(data.admin||{}));
+    statusEl.textContent='Login successful. Redirecting...';
+    setTimeout(()=>{window.location.href='admin_dashboard.html';},600);
+  }catch(err){
+    console.error(err);
+    statusEl.textContent='Unable to reach server.';
+  }
+});
+</script>
+</body>
+</html>

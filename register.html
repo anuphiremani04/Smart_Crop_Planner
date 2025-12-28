@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Register - SmartCrop Planner</title>
+<link href="assets/style.css" rel="stylesheet"/>
+<style>
+body{position:relative;perspective:1000px;overflow-x:hidden}
+body::before{content:'';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background-image:url('logo.png');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:0.05;z-index:0;pointer-events:none}
+body>*{position:relative;z-index:1}
+.brand-logo{display:flex;align-items:center;gap:12px}
+.brand-logo img{height:40px;width:auto;object-fit:contain}
+/* 3D Floating Objects */
+.shape-3d{position:fixed;z-index:0;pointer-events:none;opacity:0.15;animation:float3d 20s infinite ease-in-out}
+.shape-3d-1{width:120px;height:120px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:20px;top:15%;left:8%;transform:rotateX(45deg) rotateY(45deg) rotateZ(0deg);box-shadow:0 20px 40px rgba(102,126,234,0.3)}
+.shape-3d-2{width:80px;height:80px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:50%;top:60%;right:10%;transform:rotateX(60deg) rotateY(30deg) rotateZ(45deg);box-shadow:0 15px 30px rgba(79,172,254,0.3)}
+.shape-3d-3{width:100px;height:100px;background:linear-gradient(135deg,#f093fb,#f5576c);clip-path:polygon(50% 0%,0% 100%,100% 100%);top:35%;right:15%;transform:rotateX(30deg) rotateY(60deg) rotateZ(30deg);box-shadow:0 18px 35px rgba(240,147,251,0.3)}
+.shape-3d-4{width:90px;height:90px;background:linear-gradient(135deg,#43e97b,#38f9d7);border-radius:12px;bottom:20%;left:12%;transform:rotateX(50deg) rotateY(45deg) rotateZ(60deg);box-shadow:0 16px 32px rgba(67,233,123,0.3)}
+@keyframes float3d{
+  0%,100%{transform:translateY(0) rotateX(45deg) rotateY(45deg) rotateZ(0deg)}
+  25%{transform:translateY(-30px) rotateX(50deg) rotateY(50deg) rotateZ(10deg)}
+  50%{transform:translateY(-15px) rotateX(40deg) rotateY(40deg) rotateZ(-5deg)}
+  75%{transform:translateY(-25px) rotateX(55deg) rotateY(45deg) rotateZ(15deg)}
+}
+#register-tabs {
+  position: relative;
+  z-index: 10;
+}
+#register-tabs .tabs {
+  display: flex !important;
+  border-bottom: 2px solid #eef2f7;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+#register-tabs .tab {
+  padding: 14px 24px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #6b7280;
+  flex: 1;
+  text-align: center;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+#register-tabs .tab:hover {
+  color: #3b82f6;
+  background-color: #f8fafc;
+}
+#register-tabs .tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background-color: transparent;
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="brand-logo">
+<img src="logo.png" alt="Smart Crop Planner Logo" onerror="this.style.display='none'"/>
+<span class="brand">Smart Crop Planner</span>
+</div>
+<div class="navlinks"><a href="index.html">Home</a>
+<div class="register-dropdown" style="display:inline-block;position:relative;">
+<a class="nav-register-link" href="register.html" style="margin-left:18px;color:#374151;text-decoration:none;font-weight:600;">Register</a>
+<div class="register-menu" style="position:absolute;right:0;top:28px;display:none;background:white;border:1px solid #e6eef6;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.08);overflow:hidden;z-index:1000;">
+<a href="register.html#user" style="display:block;padding:10px 14px;color:#0f172a;text-decoration:none;">Farmer Register</a>
+<a href="register.html#admin" style="display:block;padding:10px 14px;color:#0f172a;text-decoration:none;">Admin Register</a>
+</div>
+</div>
+</div>
+</div>
+<!-- 3D Floating Objects -->
+<div class="shape-3d shape-3d-1"></div>
+<div class="shape-3d shape-3d-2"></div>
+<div class="shape-3d shape-3d-3"></div>
+<div class="shape-3d shape-3d-4"></div>
+
+<div class="hero" style="padding-top:80px">
+<div class="card-auth" style="position:relative;z-index:10">
+<div id="register-tabs" style="position:relative;z-index:10">
+<div class="tabs">
+<div class="tab active" data-role="user">Farmer</div>
+<div class="tab" data-role="admin">Admin</div>
+</div>
+<div class="tab-pane" style="display:block">
+<form id="farmer-register-form" style="width:100%">
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Email</label>
+<input class="form-control" id="reg-email" placeholder="Email Address" required="" type="email"/>
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Full Name</label>
+<input class="form-control" id="reg-name" placeholder="Full Name" required="" type="text"/>
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Username</label>
+<input class="form-control" id="reg-username" placeholder="Choose a username" required="" type="text"/>
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Password</label>
+<input class="form-control" id="reg-password" placeholder="Password" required="" type="password"/>
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Contact Number</label>
+<input class="form-control" id="reg-contact" placeholder="Phone number" type="tel"/>
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Location</label>
+<input class="form-control" id="reg-location" placeholder="Village / District" type="text"/>
+<div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px">
+<div style="flex:1">
+<label style="display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px">Soil Type</label>
+<select class="form-control" id="reg-soil" style="margin-bottom:0">
+  <option value="">Select Soil Type</option>
+  <option value="Black">Black</option>
+  <option value="Red">Red</option>
+  <option value="Laterite">Laterite</option>
+  <option value="Sandy">Sandy</option>
+  <option value="Alluvial">Alluvial</option>
+  <option value="Loamy">Loamy</option>
+  <option value="Clay">Clay</option>
+</select>
+</div>
+<div style="flex:0 0 auto;padding-top:32px;text-align:right;color:#6b7280;font-size:12px;white-space:nowrap">
+© 2025 Smart Crop Planner
+</div>
+</div>
+<button class="btn-primary" type="submit" style="width:100%">Register as Farmer</button>
+</form>
+<p class="status-text" id="farmer-register-status" style="margin-top:10px;text-align:center;color:#666;font-size:14px"></p>
+<a class="small-link" href="login.html" style="display:block;text-align:center;margin-top:12px;color:#6b7280;text-decoration:none;font-size:14px">Already have an account? Login</a>
+</div>
+<div class="tab-pane" style="display:none">
+<form id="admin-register-form">
+<label>Admin Username</label>
+<input class="form-control" id="admin-reg-username" placeholder="Admin Username" required="" type="text"/>
+<label>Password</label>
+<input class="form-control" id="admin-reg-password" placeholder="Password" required="" type="password"/>
+<button class="btn-primary" type="submit">Register as Admin</button>
+</form>
+<p class="status-text" id="admin-register-status" style="margin-top:10px;text-align:center;color:#666;font-size:14px"></p>
+<a class="small-link" href="login.html#admin">Already have an account? Login</a>
+</div>
+</div>
+</div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
+

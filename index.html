@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>SmartCrop Planner - Home</title>
+<link href="assets/style.css" rel="stylesheet"/>
+<style>
+body{position:relative}
+body::before{content:'';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background-image:url('logo.png');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:0.05;z-index:0;pointer-events:none}
+body>*{position:relative;z-index:1}
+.brand-logo{display:flex;align-items:center;gap:12px}
+.brand-logo img{height:40px;width:auto;object-fit:contain}
+.container-hero{max-width:1100px;margin:0 auto;padding:60px 20px;text-align:center}
+.hero-title{color:#1e40af;margin-bottom:12px;font-size:2.5rem;font-weight:700}
+.lead{color:#475569;font-size:1.1rem;margin-top:8px;line-height:1.6}
+.image-gallery{display:flex;gap:18px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+.image-gallery img{width:300px;height:180px;object-fit:cover;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.08);transition:transform 0.3s ease}
+.image-gallery img:hover{transform:translateY(-4px)}
+.cta-buttons{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-home{display:inline-block;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;transition:all 0.3s ease}
+.btn-home-primary{background:linear-gradient(90deg,var(--blue2),var(--blue1));color:white;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
+.btn-home-primary:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(59,130,246,0.4)}
+.btn-home-outline{background:white;color:#0f172a;border:2px solid #e6eef6}
+.btn-home-outline:hover{background:#f8fafc;border-color:var(--blue2);color:var(--blue2)}
+.features{display:flex;gap:24px;justify-content:center;margin-top:60px;flex-wrap:wrap}
+.feature-card{background:white;border-radius:12px;padding:24px;width:320px;box-shadow:0 12px 30px rgba(2,6,23,0.06);text-align:left;transition:transform 0.3s ease,box-shadow 0.3s ease}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(2,6,23,0.1)}
+.feature-card h4{margin-top:0;color:#0f172a;font-size:1.25rem;font-weight:700;margin-bottom:12px}
+.feature-card p{color:#64748b;line-height:1.6;margin:0}
+.about-section{max-width:1100px;margin:60px auto;padding:0 20px}
+.about-card{background:white;border-radius:12px;padding:32px;box-shadow:0 12px 30px rgba(2,6,23,0.06)}
+.about-card h3{margin-top:0;color:#0f172a;font-size:1.5rem;font-weight:700;margin-bottom:16px}
+.about-card p{color:#475569;line-height:1.7;margin:0;font-size:1.05rem}
+@media(max-width:768px){.hero-title{font-size:2rem}.image-gallery img{width:100%;max-width:300px}.features{gap:18px}.feature-card{width:100%}.brand-logo img{height:32px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="brand-logo">
+<img src="logo.png" alt="Smart Crop Planner Logo" onerror="this.style.display='none'"/>
+<span class="brand">Smart Crop Planner</span>
+</div>
+<div class="navlinks">
+<a href="index.html">Home</a>
+<a href="login.html">Login</a>
+<div class="register-dropdown" style="display:inline-block;position:relative;">
+<a class="nav-register-link" href="register.html" style="margin-left:18px;color:#374151;text-decoration:none;font-weight:600;">Register</a>
+<div class="register-menu" style="position:absolute;right:0;top:28px;display:none;background:white;border:1px solid #e6eef6;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.08);overflow:hidden;z-index:1000;">
+<a href="register.html#user" style="display:block;padding:10px 14px;color:#0f172a;text-decoration:none;">Farmer Register</a>
+<a href="register.html#admin" style="display:block;padding:10px 14px;color:#0f172a;text-decoration:none;">Admin Register</a>
+</div>
+</div>
+</div>
+</div>
+
+<main>
+<section class="container-hero">
+<h1 class="hero-title">Plan smarter. Grow better.</h1>
+<p class="lead">SmartCrop Planner helps farmers choose profitable crops using weather, market data and expert recommendations. Fast, simple, and data-driven.</p>
+<div class="image-gallery">
+<img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop&auto=format" alt="Dashboard"/>
+<img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=300&fit=crop&auto=format" alt="Profit Analysis"/>
+<img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop&auto=format" alt="Weather Insights"/>
+</div>
+<div class="cta-buttons">
+<a href="login.html" class="btn-home btn-home-primary">Get Started</a>
+</div>
+
+<div class="features">
+<div class="feature-card">
+<h4>Crop Recommendations</h4>
+<p>Get personalized crop recommendations based on soil, weather and market trends.</p>
+</div>
+<div class="feature-card">
+<h4>Weather Insights</h4>
+<p>Local weather forecasts and alerts to plan farming activities.</p>
+</div>
+<div class="feature-card">
+<h4>Admin Tools</h4>
+<p>Manage listings, view reports, and generate PDFs for farmers.</p>
+</div>
+</div>
+</section>
+
+<section class="about-section">
+<div class="about-card">
+<h3>About the Project</h3>
+<p>SmartCrop Planner is a web application built to assist farmers in selecting the most profitable crops using a combination of datasets and automated recommendations. It includes user and admin modules, PDF reports, and integration with weather and market APIs.</p>
+</div>
+</section>
+</main>
+
+<footer class="footer">© 2025 Smart Crop Planner</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
